@@ -1,0 +1,166 @@
+{
+  "name": "Project 18: AI-Powered Social Media Content & Hashtag Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "22396242-3ca8-4458-aca6-c576a5790576",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7c643b79-9203-4f6b-98ca-f79fcdbb5648",
+              "name": "contentTopic",
+              "value": "Apakah kamu seorang ai ? ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        48,
+        0
+      ],
+      "id": "078f2e8d-ce58-4072-ae6e-8ff95e7e136a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Buatkan draf konetn mediasosial berdasarkan topik berikut : {{ $json.contentTopic }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "\"Kamu adalah seorang Creative Copywriter dan Social Media Strategist profesional. Tugasmu adalah mengubah topik singkat dari pengguna menjadi draf postingan LinkedIn yang engaging. Format output harus terstruktur dengan jelas mencakup: Hook, Body Content, Call to Action (CTA), dan 5 Hashtag yang relevan.\""
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        288,
+        0
+      ],
+      "id": "c791a52b-9775-4c33-bb11-5c22279d4102",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        208
+      ],
+      "id": "1a0a7945-d731-4260-88f7-716244f5b612",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5160693473",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        0
+      ],
+      "id": "1a278134-677f-46c0-9c57-3daceb3573eb",
+      "name": "Send a text message",
+      "webhookId": "c9d69a39-a56f-43a6-85e7-02efa84cecbb",
+      "credentials": {
+        "telegramApi": {
+          "id": "0d7KJxxu6jdjyCdY",
+          "name": "Telegram Sales Bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "4b6ef066-3e9a-494a-9db9-ab1a2283a154",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78020135ce1e18d23f1d2826518029bcddfec44dbf18b7fe235e495f881aa588"
+  },
+  "nodeGroups": [],
+  "id": "A8OuHhx2jWC40FFq",
+  "tags": []
+}
